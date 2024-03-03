@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.stream.StreamSupport.stream;
 
@@ -39,22 +40,22 @@ public class AnimeServiceImplements implements AnimeService {
 
     @Override
     public void delete(Long id) {
-        var animeId = findById(id);
-        repository.deleteById(animeId.getId());
+        repository.deleteById(id);
     }
 
     @Override
     public List<AnimeRecordDto> listAll() {
-        List <Anime> animes = new ArrayList<>();
-        animes = ;
-        return repository.findAll();
+        List <Anime> animes = repository.findAll();
+        return animes.stream().map(AnimeMapper::toAnimeRecordDto )
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Anime replace(Anime anime) {
-        Anime existingAnime = findById(anime.getId());
-        existingAnime.setName(anime.getName());
-        return existingAnime;
+    public AnimeRecordDto replace(AnimeRecordDto dto) {
+        Anime existingAnime = repository.findById(dto.id()).get();
+        existingAnime.setNome(dto.nome());
+        Anime updateAnime = repository.save(existingAnime);
+        return AnimeMapper.toAnimeRecordDto(updateAnime);
     }
 
 

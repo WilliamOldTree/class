@@ -13,6 +13,6 @@ public interface AnimeService {
     void delete(Long id);
     AnimeRecordDto findById(Long id);
     List<AnimeRecordDto> listAll();
-    Anime replace (Anime anime);
+    AnimeRecordDto replace (AnimeRecordDto dto);
 
 }

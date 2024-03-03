@@ -2,6 +2,7 @@ package com.raiadrogasil.springrest.controller;
 
 import com.raiadrogasil.springrest.domain.Anime;
 import com.raiadrogasil.springrest.dto.AnimeRecordDto;
+import com.raiadrogasil.springrest.mapper.AnimeMapper;
 import com.raiadrogasil.springrest.service.AnimeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/anime")
 public class AnimeController {
 
 
@@ -19,7 +21,8 @@ public class AnimeController {
 
     @PostMapping
     public ResponseEntity<AnimeRecordDto> save(@RequestBody AnimeRecordDto dto){
-        return new ResponseEntity<>(animeService.createAnime(dto), HttpStatus.CREATED);
+        AnimeRecordDto savedUser = animeService.createAnime(dto);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @GetMapping(path = {"/{id}"})
@@ -33,15 +36,18 @@ public class AnimeController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(path = "/list")
+    @GetMapping
     public ResponseEntity<List<AnimeRecordDto>> list(){
-        return ResponseEntity.ok(animeService.listAll());
+        List<AnimeRecordDto> animes = animeService.listAll();
+        return new ResponseEntity<>(animes, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody Anime anime){
-        animeService.replace(anime);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PutMapping("{id}")
+    public ResponseEntity<AnimeRecordDto> replace(@RequestBody AnimeRecordDto dto,
+                                                  @PathVariable Long id ){
+        var anime = AnimeMapper.toAnime(dto);
+        anime.setId(id);        AnimeRecordDto recordDto = animeService.replace(dto);
+        return new ResponseEntity<>(recordDto, HttpStatus.NO_CONTENT);
     }
 
 }

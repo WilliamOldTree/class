@@ -8,7 +8,7 @@ public class AnimeMapper {
     public static AnimeRecordDto toAnimeRecordDto (Anime anime){
         return new AnimeRecordDto(
                 anime.getId(),
-                anime.getName()
+                anime.getNome()
 
         );
     }
